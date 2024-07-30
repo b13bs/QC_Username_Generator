@@ -48,17 +48,7 @@ def print_names(format):
         for l in lnames.splitlines():
             res.append((l).lower())
     else:
-        gen_ans = input("[*] Would you like to only use F or M names? (Y/N) : ")
-        if gen_ans.upper() == 'Y':
-            gen_q = input("[+] (M)ale or (F)emale? : ")
-            if gen_q.upper() == 'M':
-                firstN = mnames
-            elif gen_q.upper() == 'F':
-                firstN = fnames
-            else:
-                firstN = bnames
-        else:
-            firstN = bnames
+        firstN = bnames
         if format == 1:  # First
             for f in firstN.splitlines():
                 res.append((f).lower())
@@ -94,12 +84,23 @@ def print_names(format):
             for f in firstN.splitlines():
                 for l in lnames.splitlines():
                     res.append((l + f).lower())
+        elif format == 11:  # F.Lastname
+            for f in firstN.splitlines():
+                for l in lnames.splitlines():
+                    res.append((f[0] + "." + l).lower())
+        elif format == 99: # ALL
+            for i in range(1,12):
+                res += print_names(i)
+
         else:
             print('[X] Error')
     if args.domain:
         d_res = []
         for entry in res:
-            d_res.append(entry + '@' + email)
+            if '@' in entry:
+                d_res.append(entry)
+            else:
+                d_res.append(entry + '@' + email)
         return d_res
     else:
         return res
@@ -182,6 +183,8 @@ if args.username:
     print("[8] LFirstname : tjean")
     print("[9] FirstnameLastName : jeantremblay")
     print("[10] LastnameFirstname : tremblayjean")
+    print("[11] F.Lastname : j.tremblay")
+    print("[99] ALL THE FORMATS!!1!")
     format = int(input("[*] Select the format for the username generation: "))
     print("")
     data = print_names(format)
@@ -200,7 +203,7 @@ if args.wordlist:
 data = list(dict.fromkeys(data))
 
 if args.output:
-    with open('./' + args.output + '.txt', mode='w', encoding='utf-8') as file:
+    with open('./' + args.output, mode='w', encoding='utf-8') as file:
         file.write('\n'.join(data))
 else:
     print("")
